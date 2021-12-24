@@ -4,12 +4,8 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  workflow_dispatch:
-  # Triggers the workflow on push or pull request events but only for the master branch
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
+  push:
+    branches: [ master ]
 
 env:
   S3_BUCKET_NAME: pratice-deploy 
@@ -19,7 +15,7 @@ jobs:
   build: 
     runs-on: ubuntu-latest 
   
-    steps: 
+    steps:
       - name: Checkout 
         uses: actions/checkout@v2
 
