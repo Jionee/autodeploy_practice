@@ -4,14 +4,10 @@ name: CI
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-#   push:
-#     branches: [ master ]
-#   pull_request:
-#     branches: [ master ]
-    workflow_dispatch:
+  push:
+    branches: [ master ]
 
-env: # 새로 추가한 부분 
+env:
   S3_BUCKET_NAME: pratice-deploy 
   PROJECT_NAME: PracticeDeploy
 
@@ -19,7 +15,7 @@ jobs:
   build: 
     runs-on: ubuntu-latest 
   
-    steps: 
+    steps:
       - name: Checkout 
         uses: actions/checkout@v2
 
@@ -48,5 +44,9 @@ jobs:
           aws-region: ap-northeast-2
           
       - name: Upload to S3 
-        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://pratice-deploy/$GITHUB_SHA.zip
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://$S3_BUCKET_NAME/$GITHUB_SHA.zip
+        
+      - name: Code Deploy
+        run: aws deploy create-deployment --application-name pratice-deploy --deployment-config-name CodeDeployDefault.AllAtOnce --deployment-group-name develop --s3-location bucket=$S3_BUCKET_NAME,bundleType=zip,key=$GITHUB_SHA.zip
+
 
