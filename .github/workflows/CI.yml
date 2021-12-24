@@ -9,7 +9,7 @@ on:
 #     branches: [ master ]
 #   pull_request:
 #     branches: [ master ]
-    workflow_dispatch:
+  workflow_dispatch:
 
 env: # 새로 추가한 부분 
   S3_BUCKET_NAME: pratice-deploy 
