@@ -10,7 +10,11 @@ on:
 #   pull_request:
 #     branches: [ master ]
     workflow_dispatch:
-    
+
+env: # 새로 추가한 부분 
+  S3_BUCKET_NAME: pratice-deploy 
+  PROJECT_NAME: PracticeDeploy
+
 jobs: 
   build: 
     runs-on: ubuntu-latest 
@@ -31,4 +35,18 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
         shell: bash
+        
+      - name: Make zip file 
+        run: zip -r ./$GITHUB_SHA.zip . 
+        shell: bash 
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+          
+      - name: Upload to S3 
+        run: aws s3 cp --region ap-northeast-2 ./$GITHUB_SHA.zip s3://pratice-deploy/$GITHUB_SHA.zip
 
